@@ -9,13 +9,7 @@ const team = [
     bio: 'A recent B.Sc. (IT) graduate with a strong passion for web development, cybersecurity, and digital innovation. This project is a culmination of my academic learning and my first step into the professional world. I am eager to apply my skills to create impactful digital solutions.',
     image: '/images/hardik-singh.jpeg'
   },
-  {
-  name: 'Anshu Rajkagoria',
-role: 'CEO & Cybersecurity Expert',
-bio: 'As the CEO of the organization, Anshu Rajkagoria brings strong leadership skills and a clear strategic vision to drive innovation and growth. With expertise in Cybersecurity and a solid foundation in Web Development, she focuses on building secure and scalable digital solutions. Along with her technical knowledge, Anshu possesses excellent soft skills including communication, teamwork, leadership, and problem-solving abilities. She has consistently maintained a strong academic performance with a CGPA of 7+, reflecting her dedication, discipline, and commitment toward continuous learning and professional excellence.',
-image: '/images/Anshu-Rajkagoria.jpeg'
-
-  }
+  
 ];
 
 const achievements = [

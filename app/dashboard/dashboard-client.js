@@ -23,6 +23,8 @@ export default function Dashboard() {
   const [activities, setActivities] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [showQuickInput, setShowQuickInput] = useState(false);
+  const [quickProject, setQuickProject] = useState({ name: '', description: '' });
 
   useEffect(() => {
     // Get user data
@@ -31,8 +33,8 @@ export default function Dashboard() {
 
     // Fetch user's projects
     fetchProjects();
-    fetchNotifications();
-    fetchActivities();
+    // fetchNotifications();
+    // fetchActivities();
   }, []);
 
   const fetchProjects = async () => {
@@ -45,15 +47,15 @@ export default function Dashboard() {
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         setProjects(data.projects);
-        
+
         // Calculate stats
         const total = data.projects.length;
         const completed = data.projects.filter(p => p.status === 'completed').length;
         const ongoing = data.projects.filter(p => p.status === 'in-progress').length;
-        
+
         setStats({
           totalProjects: total,
           completedProjects: completed,
@@ -63,45 +65,11 @@ export default function Dashboard() {
       }
     } catch (error) {
       console.error('Error fetching projects:', error);
-      setError('Failed to load projects');
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchNotifications = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/notifications', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      const data = await response.json();
-      if (data.success) {
-        setNotifications(data.notifications.slice(0, 3));
-      }
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
-    }
-  };
-
-  const fetchActivities = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/activities', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      const data = await response.json();
-      if (data.success) {
-        setActivities(data.activities.slice(0, 5));
-      }
-    } catch (error) {
-      console.error('Error fetching activities:', error);
-    }
-  };
 
   const handleCreateProject = async () => {
     if (!newProject.name || !newProject.description) {
@@ -111,7 +79,7 @@ export default function Dashboard() {
 
     setSubmitting(true);
     setError('');
-    
+
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('/api/projects', {
@@ -124,12 +92,12 @@ export default function Dashboard() {
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         setShowNewProjectModal(false);
         setNewProject({ name: '', description: '' });
         fetchProjects();
-        
+
         // Add activity
         const newActivity = {
           type: 'project_created',
@@ -137,7 +105,7 @@ export default function Dashboard() {
           timestamp: new Date()
         };
         setActivities([newActivity, ...activities]);
-        
+
         // Show success notification
         setNotifications([{
           type: 'success',
@@ -155,6 +123,50 @@ export default function Dashboard() {
       setSubmitting(false);
     }
   };
+  const handleQuickAddProject = async () => {
+
+  if (!quickProject.name || !quickProject.description) {
+    setError("Fill all fields");
+    return;
+  }
+
+  setSubmitting(true);
+
+  try {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch('/api/projects', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        ...quickProject,
+        status: 'pending',
+        completionPercentage: 0,
+        lastUpdated: new Date()
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+
+      const updated = [data.project, ...projects];
+      setProjects(updated);
+
+      setShowQuickInput(false);
+      setQuickProject({ name: '', description: '' });
+
+    }
+
+  } catch {
+    setError("Error creating project");
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   const handleSendMessage = async () => {
     if (!message.subject || !message.content) {
@@ -164,7 +176,7 @@ export default function Dashboard() {
 
     setSubmitting(true);
     setError('');
-    
+
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('/api/messages', {
@@ -177,11 +189,11 @@ export default function Dashboard() {
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         setShowMessageModal(false);
         setMessage({ subject: '', content: '' });
-        
+
         // Add activity
         const newActivity = {
           type: 'message_sent',
@@ -189,7 +201,7 @@ export default function Dashboard() {
           timestamp: new Date()
         };
         setActivities([newActivity, ...activities]);
-        
+
         // Show success notification
         setNotifications([{
           type: 'success',
@@ -216,7 +228,7 @@ export default function Dashboard() {
 
     setSubmitting(true);
     setError('');
-    
+
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('/api/reports', {
@@ -229,11 +241,11 @@ export default function Dashboard() {
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         setShowReportModal(false);
         setReport({ title: '', content: '' });
-        
+
         // Add activity
         const newActivity = {
           type: 'report_created',
@@ -241,7 +253,7 @@ export default function Dashboard() {
           timestamp: new Date()
         };
         setActivities([newActivity, ...activities]);
-        
+
         // Show success notification
         setNotifications([{
           type: 'success',
@@ -311,12 +323,12 @@ export default function Dashboard() {
       <SimpleDashboardLayout title="Dashboard">
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ 
-              width: '40px', 
-              height: '40px', 
-              border: '4px solid #f3f3f3', 
-              borderTop: '4px solid #3B82F6', 
-              borderRadius: '50%', 
+            <div style={{
+              width: '40px',
+              height: '40px',
+              border: '4px solid #f3f3f3',
+              borderTop: '4px solid #3B82F6',
+              borderRadius: '50%',
               animation: 'spin 1s linear infinite',
               margin: '0 auto 16px'
             }}></div>
@@ -343,7 +355,7 @@ export default function Dashboard() {
           alignItems: 'center'
         }}>
           <span>{error}</span>
-          <button 
+          <button
             onClick={() => setError('')}
             style={{ background: 'none', border: 'none', color: '#991B1B', cursor: 'pointer', fontSize: '18px' }}
           >
@@ -353,10 +365,10 @@ export default function Dashboard() {
       )}
 
       {/* Welcome Section */}
-      <div style={{ 
-        backgroundColor: 'white', 
-        borderRadius: '12px', 
-        padding: '32px', 
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        padding: '32px',
         marginBottom: '24px',
         boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -369,16 +381,16 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-        gap: '24px', 
-        marginBottom: '24px' 
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+        gap: '24px',
+        marginBottom: '24px'
       }}>
-        <div style={{ 
-          backgroundColor: 'white', 
-          borderRadius: '12px', 
-          padding: '24px', 
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          padding: '24px',
           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
           borderTop: '4px solid #3B82F6',
           transition: 'transform 0.2s, box-shadow 0.2s'
@@ -388,14 +400,14 @@ export default function Dashboard() {
               <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '4px' }}>Total Projects</p>
               <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#1F2937' }}>{stats.totalProjects}</p>
             </div>
-            <div style={{ 
-              width: '56px', 
-              height: '56px', 
-              borderRadius: '12px', 
-              backgroundColor: '#EBF5FF', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center' 
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '12px',
+              backgroundColor: '#EBF5FF',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
@@ -404,10 +416,11 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div style={{ 
-          backgroundColor: 'white', 
-          borderRadius: '12px', 
-          padding: '24px', 
+
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          padding: '24px',
           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
           borderTop: '4px solid #10B981',
           transition: 'transform 0.2s, box-shadow 0.2s'
@@ -417,14 +430,14 @@ export default function Dashboard() {
               <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '4px' }}>Completed</p>
               <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#1F2937' }}>{stats.completedProjects}</p>
             </div>
-            <div style={{ 
-              width: '56px', 
-              height: '56px', 
-              borderRadius: '12px', 
-              backgroundColor: '#D1FAE5', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center' 
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '12px',
+              backgroundColor: '#D1FAE5',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -434,10 +447,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div style={{ 
-          backgroundColor: 'white', 
-          borderRadius: '12px', 
-          padding: '24px', 
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          padding: '24px',
           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
           borderTop: '4px solid #F59E0B',
           transition: 'transform 0.2s, box-shadow 0.2s'
@@ -447,14 +460,14 @@ export default function Dashboard() {
               <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '4px' }}>In Progress</p>
               <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#1F2937' }}>{stats.ongoingProjects}</p>
             </div>
-            <div style={{ 
-              width: '56px', 
-              height: '56px', 
-              borderRadius: '12px', 
-              backgroundColor: '#FEF3C7', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center' 
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '12px',
+              backgroundColor: '#FEF3C7',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -464,10 +477,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div style={{ 
-          backgroundColor: 'white', 
-          borderRadius: '12px', 
-          padding: '24px', 
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          padding: '24px',
           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
           borderTop: '4px solid #EF4444',
           transition: 'transform 0.2s, box-shadow 0.2s'
@@ -477,14 +490,14 @@ export default function Dashboard() {
               <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '4px' }}>Pending Tasks</p>
               <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#1F2937' }}>{stats.pendingTasks}</p>
             </div>
-            <div style={{ 
-              width: '56px', 
-              height: '56px', 
-              borderRadius: '12px', 
-              backgroundColor: '#FEE2E2', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center' 
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '12px',
+              backgroundColor: '#FEE2E2',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
@@ -495,41 +508,126 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      <button
+        onClick={() => setShowQuickInput(!showQuickInput)}
+        style={{
+          padding: '10px 16px',
+          backgroundColor: '#3B82F6',
+          color: 'white',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: 'pointer',
+          marginBottom: '20px'
+        }}
+      >
+        + Quick Add Project
+      </button>
+      {showQuickInput && (
+  <div style={{
+    backgroundColor: 'white',
+    padding: '20px',
+    borderRadius: '12px',
+    marginBottom: '20px',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    border: '1px solid #E5E7EB'
+  }}>
 
+    <h3 style={{
+      fontSize: '16px',
+      fontWeight: '600',
+      color: '#1F2937',
+      marginBottom: '12px'
+    }}>
+      Create New Project
+    </h3>
+
+    <input
+      type="text"
+      placeholder="Project Name"
+      value={quickProject.name}
+      onChange={(e) => setQuickProject({ ...quickProject, name: e.target.value })}
+      style={{
+        width: '100%',
+        padding: '10px',
+        borderRadius: '8px',
+        border: '1px solid #D1D5DB',
+        marginBottom: '10px',
+        outline: 'none',
+        fontSize: '14px'
+      }}
+      onFocus={(e) => e.target.style.borderColor = '#3B82F6'}
+      onBlur={(e) => e.target.style.borderColor = '#D1D5DB'}
+    />
+
+    <textarea
+      placeholder="Project Description"
+      value={quickProject.description}
+      onChange={(e) => setQuickProject({ ...quickProject, description: e.target.value })}
+      style={{
+        width: '100%',
+        padding: '10px',
+        borderRadius: '8px',
+        border: '1px solid #D1D5DB',
+        marginBottom: '12px',
+        outline: 'none',
+        fontSize: '14px'
+      }}
+      onFocus={(e) => e.target.style.borderColor = '#3B82F6'}
+      onBlur={(e) => e.target.style.borderColor = '#D1D5DB'}
+    />
+
+    <div style={{ display: 'flex', gap: '10px' }}>
+      <button
+        onClick={handleQuickAddProject}
+        style={{
+          padding: '10px 16px',
+          borderRadius: '8px',
+          border: 'none',
+          backgroundColor: '#3B82F6',
+          color: 'white',
+          fontWeight: '500',
+          cursor: 'pointer'
+        }}
+      >
+        Create
+      </button>
+
+      <button
+        onClick={() => setShowQuickInput(false)}
+        style={{
+          padding: '10px 16px',
+          borderRadius: '8px',
+          border: '1px solid #D1D5DB',
+          backgroundColor: '#3B82F6',
+          color: '#374151',
+          color:'white',
+          cursor: 'pointer'
+        }}
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+)}
       {/* Recent Projects and Activities */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: '2fr 1fr', 
-        gap: '24px', 
-        marginBottom: '24px' 
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '2fr 1fr',
+        gap: '24px',
+        marginBottom: '24px'
       }}>
         {/* Recent Projects */}
-        <div style={{ 
-          backgroundColor: 'white', 
-          borderRadius: '12px', 
-          padding: '24px', 
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          padding: '24px',
           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1F2937' }}>Recent Projects</h3>
-            <button 
-              onClick={() => window.location.href = '/dashboard/projects'}
-              style={{ 
-                backgroundColor: 'transparent', 
-                color: '#3B82F6', 
-                border: 'none', 
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '500',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                transition: 'background-color 0.2s'
-              }}
-            >
-              View All →
-            </button>
+
           </div>
-          
+
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
@@ -545,11 +643,11 @@ export default function Dashboard() {
                   <tr key={project._id} style={{ borderBottom: '1px solid #F3F4F6', transition: 'background-color 0.2s' }}>
                     <td style={{ padding: '16px 0', fontSize: '14px', color: '#1F2937', fontWeight: '500' }}>{project.name}</td>
                     <td style={{ padding: '16px 0' }}>
-                      <span style={{ 
-                        display: 'inline-block', 
-                        padding: '6px 12px', 
-                        borderRadius: '20px', 
-                        fontSize: '12px', 
+                      <span style={{
+                        display: 'inline-block',
+                        padding: '6px 12px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
                         fontWeight: '600',
                         backgroundColor: `${getStatusColor(project.status)}15`,
                         color: getStatusColor(project.status)
@@ -559,17 +657,17 @@ export default function Dashboard() {
                     </td>
                     <td style={{ padding: '16px 0', width: '150px' }}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <div style={{ 
-                          width: '100%', 
-                          height: '10px', 
-                          backgroundColor: '#E5E7EB', 
-                          borderRadius: '10px', 
+                        <div style={{
+                          width: '100%',
+                          height: '10px',
+                          backgroundColor: '#E5E7EB',
+                          borderRadius: '10px',
                           overflow: 'hidden',
                           marginRight: '12px'
                         }}>
-                          <div style={{ 
-                            width: `${project.completionPercentage}%`, 
-                            height: '100%', 
+                          <div style={{
+                            width: `${project.completionPercentage}%`,
+                            height: '100%',
                             backgroundColor: getProgressBarColor(project.completionPercentage),
                             transition: 'width 0.3s'
                           }}></div>
@@ -595,24 +693,24 @@ export default function Dashboard() {
         </div>
 
         {/* Recent Activities */}
-        <div style={{ 
-          backgroundColor: 'white', 
-          borderRadius: '12px', 
-          padding: '24px', 
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          padding: '24px',
           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
         }}>
           <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1F2937', marginBottom: '20px' }}>Recent Activities</h3>
           <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
             {activities.length > 0 ? (
               activities.map((activity, index) => (
-                <div key={index} style={{ 
-                  padding: '12px 0', 
+                <div key={index} style={{
+                  padding: '12px 0',
                   borderBottom: index < activities.length - 1 ? '1px solid #F3F4F6' : 'none',
                   display: 'flex',
                   alignItems: 'flex-start',
                   gap: '12px'
                 }}>
-                  <div style={{ 
+                  <div style={{
                     fontSize: '20px',
                     minWidth: '24px',
                     textAlign: 'center'
@@ -641,10 +739,10 @@ export default function Dashboard() {
 
       {/* Notifications */}
       {notifications.length > 0 && (
-        <div style={{ 
-          backgroundColor: 'white', 
-          borderRadius: '12px', 
-          padding: '24px', 
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          padding: '24px',
           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
           marginBottom: '24px'
         }}>
@@ -654,23 +752,22 @@ export default function Dashboard() {
               <div key={index} style={{
                 padding: '16px',
                 borderRadius: '8px',
-                backgroundColor: notification.type === 'success' ? '#D1FAE5' : 
-                               notification.type === 'warning' ? '#FEF3C7' : 
-                               notification.type === 'error' ? '#FEE2E2' : '#EBF8FF',
-                borderLeft: `4px solid ${
-                  notification.type === 'success' ? '#10B981' : 
-                  notification.type === 'warning' ? '#F59E0B' : 
-                  notification.type === 'error' ? '#EF4444' : '#3B82F6'
-                }`,
+                backgroundColor: notification.type === 'success' ? '#D1FAE5' :
+                  notification.type === 'warning' ? '#FEF3C7' :
+                    notification.type === 'error' ? '#FEE2E2' : '#EBF8FF',
+                borderLeft: `4px solid ${notification.type === 'success' ? '#10B981' :
+                  notification.type === 'warning' ? '#F59E0B' :
+                    notification.type === 'error' ? '#EF4444' : '#3B82F6'
+                  }`,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px'
               }}>
-                <div style={{ 
+                <div style={{
                   fontSize: '20px',
-                  color: notification.type === 'success' ? '#10B981' : 
-                         notification.type === 'warning' ? '#F59E0B' : 
-                         notification.type === 'error' ? '#EF4444' : '#3B82F6'
+                  color: notification.type === 'success' ? '#10B981' :
+                    notification.type === 'warning' ? '#F59E0B' :
+                      notification.type === 'error' ? '#EF4444' : '#3B82F6'
                 }}>
                   {getNotificationIcon(notification.type)}
                 </div>
@@ -691,156 +788,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Quick Actions */}
-      <div style={{ 
-        backgroundColor: 'white', 
-        borderRadius: '12px', 
-        padding: '24px', 
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-      }}>
-        <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1F2937', marginBottom: '20px' }}>Quick Actions</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-          <button 
-            onClick={() => setShowNewProjectModal(true)}
-            style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              padding: '20px', 
-              border: '2px solid #E5E7EB', 
-              borderRadius: '12px', 
-              backgroundColor: 'white', 
-              cursor: 'pointer',
-              transition: 'all 0.3s',
-              position: 'relative',
-              overflow: 'hidden'
-            }}
-          >
-            <div style={{ 
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              opacity: 0,
-              transition: 'opacity 0.3s'
-            }}></div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '12px', position: 'relative', zIndex: 1 }}>
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="16"></line>
-              <line x1="8" y1="12" x2="16" y2="12"></line>
-            </svg>
-            <span style={{ fontSize: '16px', color: '#1F2937', fontWeight: '500', position: 'relative', zIndex: 1 }}>New Project</span>
-          </button>
-          
-          <button 
-            onClick={() => setShowReportModal(true)}
-            style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              padding: '20px', 
-              border: '2px solid #E5E7EB', 
-              borderRadius: '12px', 
-              backgroundColor: 'white', 
-              cursor: 'pointer',
-              transition: 'all 0.3s',
-              position: 'relative',
-              overflow: 'hidden'
-            }}
-          >
-            <div style={{ 
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-              opacity: 0,
-              transition: 'opacity 0.3s'
-            }}></div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '12px', position: 'relative', zIndex: 1 }}>
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
-            <span style={{ fontSize: '16px', color: '#1F2937', fontWeight: '500', position: 'relative', zIndex: 1 }}>Create Report</span>
-          </button>
-          
-          <button 
-            onClick={() => setShowMessageModal(true)}
-            style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              padding: '20px', 
-              border: '2px solid #E5E7EB', 
-              borderRadius: '12px', 
-              backgroundColor: 'white', 
-              cursor: 'pointer',
-              transition: 'all 0.3s',
-              position: 'relative',
-              overflow: 'hidden'
-            }}
-          >
-            <div style={{ 
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-              opacity: 0,
-              transition: 'opacity 0.3s'
-            }}></div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '12px', position: 'relative', zIndex: 1 }}>
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-              <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-            <span style={{ fontSize: '16px', color: '#1F2937', fontWeight: '500', position: 'relative', zIndex: 1 }}>Send Message</span>
-          </button>
-          
-          <button 
-            onClick={() => window.open('mailto:support@shsolutions.com', '_blank')}
-            style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              padding: '20px', 
-              border: '2px solid #E5E7EB', 
-              borderRadius: '12px', 
-              backgroundColor: 'white', 
-              cursor: 'pointer',
-              transition: 'all 0.3s',
-              position: 'relative',
-              overflow: 'hidden'
-            }}
-          >
-            <div style={{ 
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-              opacity: 0,
-              transition: 'opacity 0.3s'
-            }}></div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '12px', position: 'relative', zIndex: 1 }}>
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M12 1v6m0 6v6m4.22-13.22l4.24 4.24M1.54 1.54l4.24 4.24M21 12h-6m-6 0H3"></path>
-            </svg>
-            <span style={{ fontSize: '16px', color: '#1F2937', fontWeight: '500', position: 'relative', zIndex: 1 }}>Support</span>
-          </button>
-        </div>
-      </div>
+
 
       {/* New Project Modal */}
       {showNewProjectModal && (
@@ -872,7 +820,7 @@ export default function Dashboard() {
               <input
                 type="text"
                 value={newProject.name}
-                onChange={(e) => setNewProject({...newProject, name: e.target.value})}
+                onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
                 style={{
                   width: '100%',
                   padding: '12px 16px',
@@ -890,7 +838,7 @@ export default function Dashboard() {
               <label style={{ display: 'block', marginBottom: '8px', color: '#374151', fontWeight: '500' }}>Description</label>
               <textarea
                 value={newProject.description}
-                onChange={(e) => setNewProject({...newProject, description: e.target.value})}
+                onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
                 style={{
                   width: '100%',
                   padding: '12px 16px',
@@ -946,13 +894,13 @@ export default function Dashboard() {
               >
                 {submitting ? (
                   <>
-                    <div style={{ 
-                      width: '16px', 
-                      height: '16px', 
-                      border: '2px solid white', 
-                      borderTop: '2px solid transparent', 
-                      borderRadius: '50%', 
-                      animation: 'spin 1s linear infinite' 
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid white',
+                      borderTop: '2px solid transparent',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
                     }}></div>
                     Creating...
                   </>
@@ -995,7 +943,7 @@ export default function Dashboard() {
               <input
                 type="text"
                 value={message.subject}
-                onChange={(e) => setMessage({...message, subject: e.target.value})}
+                onChange={(e) => setMessage({ ...message, subject: e.target.value })}
                 style={{
                   width: '100%',
                   padding: '12px 16px',
@@ -1013,7 +961,7 @@ export default function Dashboard() {
               <label style={{ display: 'block', marginBottom: '8px', color: '#374151', fontWeight: '500' }}>Message</label>
               <textarea
                 value={message.content}
-                onChange={(e) => setMessage({...message, content: e.target.value})}
+                onChange={(e) => setMessage({ ...message, content: e.target.value })}
                 style={{
                   width: '100%',
                   padding: '12px 16px',
@@ -1069,13 +1017,13 @@ export default function Dashboard() {
               >
                 {submitting ? (
                   <>
-                    <div style={{ 
-                      width: '16px', 
-                      height: '16px', 
-                      border: '2px solid white', 
-                      borderTop: '2px solid transparent', 
-                      borderRadius: '50%', 
-                      animation: 'spin 1s linear infinite' 
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid white',
+                      borderTop: '2px solid transparent',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
                     }}></div>
                     Sending...
                   </>
@@ -1118,7 +1066,7 @@ export default function Dashboard() {
               <input
                 type="text"
                 value={report.title}
-                onChange={(e) => setReport({...report, title: e.target.value})}
+                onChange={(e) => setReport({ ...report, title: e.target.value })}
                 style={{
                   width: '100%',
                   padding: '12px 16px',
@@ -1136,7 +1084,7 @@ export default function Dashboard() {
               <label style={{ display: 'block', marginBottom: '8px', color: '#374151', fontWeight: '500' }}>Report Content</label>
               <textarea
                 value={report.content}
-                onChange={(e) => setReport({...report, content: e.target.value})}
+                onChange={(e) => setReport({ ...report, content: e.target.value })}
                 style={{
                   width: '100%',
                   padding: '12px 16px',
@@ -1192,13 +1140,13 @@ export default function Dashboard() {
               >
                 {submitting ? (
                   <>
-                    <div style={{ 
-                      width: '16px', 
-                      height: '16px', 
-                      border: '2px solid white', 
-                      borderTop: '2px solid transparent', 
-                      borderRadius: '50%', 
-                      animation: 'spin 1s linear infinite' 
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid white',
+                      borderTop: '2px solid transparent',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
                     }}></div>
                     Creating...
                   </>
