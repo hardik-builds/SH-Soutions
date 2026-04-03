@@ -65,12 +65,12 @@ export default function Contact() {
   return (
     <div style={{ backgroundColor: 'var(--bg-color)', color: 'var(--text-color)', transition: 'background-color 0.3s, color 0.3s' }}>
       {/* Hero Section */}
-      <section style={{ 
-        background: isDark 
-          ? 'linear-gradient(to bottom right, #1e3a8a, #0f172a)' 
-          : 'linear-gradient(to bottom right, #3B82F6, #06B6D4)', 
-        color: 'white', 
-        padding: '96px 0' 
+      <section style={{
+        background: isDark
+          ? 'linear-gradient(to bottom right, #1e3a8a, #0f172a)'
+          : 'linear-gradient(to bottom right, #3B82F6, #06B6D4)',
+        color: 'white',
+        padding: '96px 0'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px', textAlign: 'center' }}>
           <h1 style={{ fontSize: '48px', fontWeight: '800', marginBottom: '24px' }}>Contact Us</h1>
@@ -88,13 +88,13 @@ export default function Contact() {
             <div>
               <h2 style={{ fontSize: '30px', fontWeight: 'bold', marginBottom: '24px', color: 'var(--primary-color)' }}>Send Us a Message</h2>
               {isSubmitted ? (
-                <div style={{ 
-                  backgroundColor: isDark ? '#064e3b' : '#D1FAE5', 
-                  border: `1px solid ${isDark ? '#059669' : '#10B981'}`, 
-                  color: isDark ? '#6ee7b7' : '#065F46', 
-                  padding: '12px 16px', 
-                  borderRadius: '6px', 
-                  marginBottom: '24px' 
+                <div style={{
+                  backgroundColor: isDark ? '#064e3b' : '#D1FAE5',
+                  border: `1px solid ${isDark ? '#059669' : '#10B981'}`,
+                  color: isDark ? '#6ee7b7' : '#065F46',
+                  padding: '12px 16px',
+                  borderRadius: '6px',
+                  marginBottom: '24px'
                 }}>
                   Thank you for your message! We'll get back to you soon.
                 </div>
@@ -110,10 +110,10 @@ export default function Contact() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      style={{ 
-                        width: '100%', 
-                        padding: '12px 16px', 
-                        border: `1px solid var(--border-color)`, 
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        border: `1px solid var(--border-color)`,
                         borderRadius: '6px',
                         backgroundColor: 'var(--input-bg)',
                         color: 'var(--text-color)',
@@ -130,10 +130,10 @@ export default function Contact() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      style={{ 
-                        width: '100%', 
-                        padding: '12px 16px', 
-                        border: `1px solid var(--border-color)`, 
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        border: `1px solid var(--border-color)`,
                         borderRadius: '6px',
                         backgroundColor: 'var(--input-bg)',
                         color: 'var(--text-color)',
@@ -151,10 +151,10 @@ export default function Contact() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      style={{ 
-                        width: '100%', 
-                        padding: '12px 16px', 
-                        border: `1px solid var(--border-color)`, 
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        border: `1px solid var(--border-color)`,
                         borderRadius: '6px',
                         backgroundColor: 'var(--input-bg)',
                         color: 'var(--text-color)',
@@ -170,10 +170,10 @@ export default function Contact() {
                       name="company"
                       value={formData.company}
                       onChange={handleChange}
-                      style={{ 
-                        width: '100%', 
-                        padding: '12px 16px', 
-                        border: `1px solid var(--border-color)`, 
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        border: `1px solid var(--border-color)`,
                         borderRadius: '6px',
                         backgroundColor: 'var(--input-bg)',
                         color: 'var(--text-color)',
@@ -189,10 +189,10 @@ export default function Contact() {
                     name="service"
                     value={formData.service}
                     onChange={handleChange}
-                    style={{ 
-                      width: '100%', 
-                      padding: '12px 16px', 
-                      border: `1px solid var(--border-color)`, 
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: `1px solid var(--border-color)`,
                       borderRadius: '6px',
                       backgroundColor: 'var(--input-bg)',
                       color: 'var(--text-color)',
@@ -217,11 +217,11 @@ export default function Contact() {
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    style={{ 
-                      width: '100%', 
-                      padding: '12px 16px', 
-                      border: `1px solid var(--border-color)`, 
-                      borderRadius: '6px', 
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: `1px solid var(--border-color)`,
+                      borderRadius: '6px',
                       resize: 'vertical',
                       backgroundColor: 'var(--input-bg)',
                       color: 'var(--text-color)',
@@ -232,14 +232,14 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  style={{ 
-                    backgroundColor: 'var(--primary-color)', 
-                    color: 'white', 
-                    padding: '12px 24px', 
-                    borderRadius: '6px', 
-                    fontWeight: '600', 
-                    border: 'none', 
-                    cursor: 'pointer', 
+                  style={{
+                    backgroundColor: 'var(--primary-color)',
+                    color: 'white',
+                    padding: '12px 24px',
+                    borderRadius: '6px',
+                    fontWeight: '600',
+                    border: 'none',
+                    cursor: 'pointer',
                     transition: 'all 0.3s',
                     opacity: isSubmitting ? 0.7 : 1
                   }}
@@ -254,11 +254,11 @@ export default function Contact() {
               <h2 style={{ fontSize: '30px', fontWeight: 'bold', marginBottom: '24px', color: 'var(--primary-color)' }}>Get In Touch</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                  <div style={{ 
-                    backgroundColor: isDark ? 'rgba(59, 130, 246, 0.2)' : '#DBEAFE', 
-                    padding: '12px', 
-                    borderRadius: '50%', 
-                    marginRight: '16px' 
+                  <div style={{
+                    backgroundColor: isDark ? 'rgba(59, 130, 246, 0.2)' : '#DBEAFE',
+                    padding: '12px',
+                    borderRadius: '50%',
+                    marginRight: '16px'
                   }}>
                     <svg xmlns="http://www.w3.org/2000/svg" style={{ height: '24px', width: '24px', color: 'var(--primary-color)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -267,16 +267,16 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 style={{ fontWeight: 'bold', fontSize: '18px', marginBottom: '4px', color: 'var(--text-color)' }}>Office Location</h3>
-                    <p style={{ color: 'var(--text-secondary)' }}>123 Tech Street, Silicon Valley, CA 94025</p>
+                    <p style={{ color: 'var(--text-secondary)' }}>Vatsala Tai Naik Nagar S.G.Barve Marg Chembur Maharashtra MUmbai -400071 </p>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                  <div style={{ 
-                    backgroundColor: isDark ? 'rgba(59, 130, 246, 0.2)' : '#DBEAFE', 
-                    padding: '12px', 
-                    borderRadius: '50%', 
-                    marginRight: '16px' 
+                  <div style={{
+                    backgroundColor: isDark ? 'rgba(59, 130, 246, 0.2)' : '#DBEAFE',
+                    padding: '12px',
+                    borderRadius: '50%',
+                    marginRight: '16px'
                   }}>
                     <svg xmlns="http://www.w3.org/2000/svg" style={{ height: '24px', width: '24px', color: 'var(--primary-color)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -284,16 +284,16 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 style={{ fontWeight: 'bold', fontSize: '18px', marginBottom: '4px', color: 'var(--text-color)' }}>Phone</h3>
-                    <p style={{ color: 'var(--text-secondary)' }}>+1 (555) 123-4567</p>
+                    <p style={{ color: 'var(--text-secondary)' }}>+91 8652768171</p>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                  <div style={{ 
-                    backgroundColor: isDark ? 'rgba(59, 130, 246, 0.2)' : '#DBEAFE', 
-                    padding: '12px', 
-                    borderRadius: '50%', 
-                    marginRight: '16px' 
+                  <div style={{
+                    backgroundColor: isDark ? 'rgba(59, 130, 246, 0.2)' : '#DBEAFE',
+                    padding: '12px',
+                    borderRadius: '50%',
+                    marginRight: '16px'
                   }}>
                     <svg xmlns="http://www.w3.org/2000/svg" style={{ height: '24px', width: '24px', color: 'var(--primary-color)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -301,16 +301,16 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 style={{ fontWeight: 'bold', fontSize: '18px', marginBottom: '4px', color: 'var(--text-color)' }}>Email</h3>
-                    <p style={{ color: 'var(--text-secondary)' }}>info@shsolutions.com</p>
+                    <p style={{ color: 'var(--text-secondary)' }}>contact@ashsolutions.site</p>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                  <div style={{ 
-                    backgroundColor: isDark ? 'rgba(59, 130, 246, 0.2)' : '#DBEAFE', 
-                    padding: '12px', 
-                    borderRadius: '50%', 
-                    marginRight: '16px' 
+                  <div style={{
+                    backgroundColor: isDark ? 'rgba(59, 130, 246, 0.2)' : '#DBEAFE',
+                    padding: '12px',
+                    borderRadius: '50%',
+                    marginRight: '16px'
                   }}>
                     <svg xmlns="http://www.w3.org/2000/svg" style={{ height: '24px', width: '24px', color: 'var(--primary-color)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -318,14 +318,14 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 style={{ fontWeight: 'bold', fontSize: '18px', marginBottom: '4px', color: 'var(--text-color)' }}>Business Hours</h3>
-                    <p style={{ color: 'var(--text-secondary)' }}>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                    <p style={{ color: 'var(--text-secondary)' }}>Monday - Friday: 10:00 AM - 7:00 PM</p>
                     <p style={{ color: 'var(--text-secondary)' }}>Saturday: 10:00 AM - 4:00 PM</p>
                     <p style={{ color: 'var(--text-secondary)' }}>Sunday: Closed</p>
                   </div>
                 </div>
               </div>
 
-              {/* Map Placeholder */}
+              {/* Map Placeholder
               <div style={{ marginTop: '32px' }}>
                 <h3 style={{ fontWeight: 'bold', fontSize: '18px', marginBottom: '16px', color: 'var(--text-color)' }}>Find Us on Map</h3>
                 <div style={{ 
@@ -339,7 +339,7 @@ export default function Contact() {
                 }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Interactive Map</span>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
