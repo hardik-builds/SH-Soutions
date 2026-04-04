@@ -33,7 +33,7 @@ export default function About() {
         padding: '96px 0' 
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px', textAlign: 'center' }}>
-          <h1 style={{ fontSize: '48px', fontWeight: '800', marginBottom: '24px' }}>About ASH Solutions & Innovations</h1>
+          <h1 style={{ fontSize: '48px', fontWeight: '800', marginBottom: '24px' }}>About SH Solutions & Innovations</h1>
           <p style={{ fontSize: '20px', maxWidth: '800px', margin: '0 auto', opacity: 0.9 }}>Learn more about my journey as a fresher, the skills I've mastered, and the mentorship that guided this project.</p>
         </div>
       </section>
@@ -45,7 +45,7 @@ export default function About() {
             <div>
               <h2 style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '24px', color: 'var(--primary-color)' }}>My Journey</h2>
               <p style={{ fontSize: '18px', color: 'var(--text-color)', marginBottom: '24px', lineHeight: '1.6' }}>
-                My journey with ASH Solutions & Innovations began as a final year project for my Bachelor's degree in Information Technology at Sree Narayana Guru College of Commerce. What started as an academic requirement quickly evolved into a passion project—a platform to consolidate and showcase the full-stack development, cybersecurity principles, and digital marketing strategies I've learned.
+                My journey with SH Solutions & Innovations began as a final year project for my Bachelor's degree in Information Technology at Sree Narayana Guru College of Commerce. What started as an academic requirement quickly evolved into a passion project—a platform to consolidate and showcase the full-stack development, cybersecurity principles, and digital marketing strategies I've learned.
               </p>
               <p style={{ fontSize: '18px', color: 'var(--text-color)', marginBottom: '24px', lineHeight: '1.6' }}>
                 This website is not just a project; it's a testament to my dedication to modern web technologies and my eagerness to solve real-world problems. As a fresher entering the IT industry, my goal is to leverage these skills to help businesses establish a strong digital footprint.

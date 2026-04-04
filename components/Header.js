@@ -15,7 +15,7 @@ export default function Header() {
       <nav style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Link href="/" style={{ fontSize: '24px', fontWeight: 'bold', color: '#3B82F6', textDecoration: 'none' }}>
-            ASH Solutions
+          SH Solutions
           </Link>
 
           {/* Desktop Menu */}

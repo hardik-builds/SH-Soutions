@@ -6,7 +6,7 @@ export default function Footer() {
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: '32px' }}>
           <div>
-            <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '16px' }}>ASH Solutions</h3>
+            <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '16px' }}>SH Solutions</h3>
             <p style={{ color: '#9CA3AF' }}>
               Advanced digital solutions for modern businesses. Transform your digital presence with our innovative services.
             </p>
@@ -73,7 +73,7 @@ export default function Footer() {
         
         <div style={{ borderTop: '1px solid #374151', marginTop: '32px', paddingTop: '32px', textAlign: 'center' }}>
           <p style={{ color: '#9CA3AF' }}>
-            © {new Date().getFullYear()} ASH Solutions & Innovations. All rights reserved.
+            © {new Date().getFullYear()} SH Solutions & Innovations. All rights reserved.
           </p>
         </div>
       </div>

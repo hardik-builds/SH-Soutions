@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/components/ThemeProvider';
 import Link from 'next/link';
-
 export default function Home() {
   const { isDark } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -142,8 +141,10 @@ export default function Home() {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '30px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '32px',
+            alignItems: 'stretch',
+            gridAutoRows: '1fr'   // ⭐ FIX
           }}>
             {[
               {
@@ -201,11 +202,12 @@ export default function Home() {
 
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'space-between',   // ⭐ KEY FIX
-                  minHeight: '100%'                  // ⭐ SAFE HEIGHT
+                  justifyContent: 'flex-start',   // ⭐ CHANGE
+                  minHeight: '420px'                 // ⭐ IMPORTANTHEIGHT
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-5px)';
+                  e.currentTarget.style.transform = 'translateY(-3px)';
+                  e.currentTarget.style.zIndex = '10';   // ⭐ FIX overlap
                   e.currentTarget.style.boxShadow = isDark
                     ? '0 10px 20px rgba(0, 0, 0, 0.4)'
                     : '0 10px 20px rgba(0, 0, 0, 0.15)';
@@ -353,10 +355,12 @@ export default function Home() {
                   transition: 'all 0.3s'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-5px)';
+                  e.currentTarget.style.transform = 'translateY(-3px)';
+                  e.currentTarget.style.zIndex = '10';   // ⭐ FIX overlap
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.zIndex = '1';
                 }}
               >
                 <div style={{
